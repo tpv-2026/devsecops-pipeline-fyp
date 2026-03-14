@@ -36,6 +36,17 @@ pipeline {
                         . venv/bin/activate
                         pytest test_main.py
                     '''
+
+        stage('Run Lint'){
+            steps{
+                dir('app'){
+                    sh '''
+                        .venv/bin/activate
+                        pylint main.py || true
+                    '''
+                }
+            }
+        }
                 }
             }
         }
