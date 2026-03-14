@@ -1,12 +1,13 @@
-pipeline {
+pipeline{
     agent any
 
     stages{
         stage('Checkout Code'){
             steps{
-                echo 'Repository loaded from GitHub'
+                echo 'Repository loaded from Github'
             }
         }
+
         stage('List Files'){
             steps{
                 sh 'pwd'
@@ -15,12 +16,12 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies'){
+        stage ('Install Dependencies'){
             steps{
                 dir('app'){
                     sh '''
                         python3 --version
-                        python3 -m venv venv
+                        python -m venv venv
                         . venv/bin/activate
                         pip install --upgrade pip
                         pip install -r requirements.txt
@@ -28,7 +29,6 @@ pipeline {
                 }
             }
         }
-
         stage('Run Tests'){
             steps{
                 dir('app'){
@@ -36,17 +36,16 @@ pipeline {
                         . venv/bin/activate
                         pytest test_main.py
                     '''
-
+                }
+            }
+        }
         stage('Run Lint'){
             steps{
                 dir('app'){
                     sh '''
-                        .venv/bin/activate
+                        . venv/bin/activate
                         pylint main.py || true
                     '''
-                }
-            }
-        }
                 }
             }
         }
