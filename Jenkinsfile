@@ -58,6 +58,24 @@ pipeline{
                     }
                 }
             }
+        stage('OWASP Dependency Check'){
+            steps{
+                dir('app'){
+                    sh '''
+                        dependency-check ---scan. ---format HTML --out dependency-check-report || true
+                    '''
+                }
+            }
+        }
+        stage('Trivy Scan'){
+            steps{
+                dir('app'){
+                    sh '''
+                        trivy fs --format table --output trivy-report.txt .
+                        '''
+                }
+            }
+        }
         }
     }
 }
@@ -73,5 +91,9 @@ post{
 
     failure{
         echo 'Pipeline failed. Check the console output.'
+    }
+
+    always{
+        archiveArtifacts artifacts: 'app/dependency-check-report/*, app/trivy-report.txt', fingerprint: true
     }
 }
