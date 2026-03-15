@@ -61,3 +61,17 @@ pipeline{
         }
     }
 }
+
+post{
+    always{
+        echo 'Pipeline execution finished.'
+    }
+
+    success{
+        echo 'Pipeline completed successfully.'
+    }
+
+    failure{
+        echo 'Pipeline failed. Check the console output.'
+    }
+}
