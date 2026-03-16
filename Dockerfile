@@ -12,4 +12,7 @@ RUN apt-get update && apt-get install -y \
     wget \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
+
+
+RUN wget -qO - https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
 USER jenkins

@@ -73,7 +73,8 @@ pipeline {
                             ${dcHome}/bin/dependency-check.sh \
                             --scan . \
                             --format HTML \
-                            --out dependency-check-report
+                            --out dependency-check-report \
+                            --disableAssembly
                         """
                     }
                 }
@@ -84,7 +85,7 @@ pipeline {
             steps {
                 dir('app') {
                     sh '''
-                        trivy fs --format table --output trivy-report.txt > trivy-report.txt
+                        trivy fs --format table --output trivy-report.txt > trivy-report.txt .
                     '''
                 }
             }
