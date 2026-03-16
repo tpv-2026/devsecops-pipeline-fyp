@@ -61,6 +61,26 @@ pipeline{
                     }
                 }
             }
+        stage('OWASP Dependency Check'){
+            steps{
+                dir('app'){
+                    sh '''
+                        mkdir -p depedency-check-report
+                        echo "OWASP Depedency Check Placeholder" > depedency-check-report/report.txt
+                    '''
+                }
+            }
+        }
+
+        stage('Trivy Scan'){
+            steps{
+                dir('app'){
+                    sh '''
+                        echo "Trivy placeholder scan result" > trivy-report.txt
+                      '''
+                }
+            }
+        }
         }
     }
 
