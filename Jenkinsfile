@@ -65,11 +65,17 @@ pipeline {
 
         stage('OWASP Dependency Check') {
             steps {
-                dir('app') {
-                    sh '''
-                        mkdir -p dependency-check-report
-                        dependency-check --scan . --format HTML --out dependency-check-report > dependency-check-report/report.txt
-                    '''
+                script {
+                    def dcHome = tool 'DependencyCheck'
+
+                    dir('app') {
+                        sh """
+                            ${dcHome}/bin/dependency-check.sh \
+                            --scan . \
+                            --format HTML \
+                            --out dependency-check-report
+                        """
+                    }
                 }
             }
         }
