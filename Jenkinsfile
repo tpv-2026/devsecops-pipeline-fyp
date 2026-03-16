@@ -86,6 +86,7 @@ pipeline{
 
     post{
         always{
+            archiveArtifacts artifacts: 'app/dependency-check-report/*, app/trivy-report.txt', fingerprint: true
             echo 'Pipeline execution finished.'
         }
 
