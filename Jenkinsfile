@@ -68,7 +68,7 @@ pipeline {
                 dir('app') {
                     sh '''
                         mkdir -p dependency-check-report
-                        echo "OWASP Dependency Check placeholder report" > dependency-check-report/report.txt
+                        dependency-check --scan . --format HTML --out dependency-check-report > dependency-check-report/report.txt
                     '''
                 }
             }
@@ -78,8 +78,16 @@ pipeline {
             steps {
                 dir('app') {
                     sh '''
-                        echo "Trivy placeholder scan report" > trivy-report.txt
+                        trivy fs --format table --output trivy-report.txt > trivy-report.txt
                     '''
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 2, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: false
                 }
             }
         }
