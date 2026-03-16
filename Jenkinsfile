@@ -1,31 +1,31 @@
-pipeline{
+pipeline {
     agent any
 
     stages{
-        stage('Checkout Code'){
+        stage{'Checkout code'}{
             steps{
-                echo 'Repository loaded from Github'
+                echo 'Repository loaded from GitHub'
             }
         }
 
-        stage('List Files'){
+        stage{'List Files'}{
             steps{
                 sh 'pwd'
                 sh 'ls -la'
-                sh 'ls -la app'
+                sh ' ls -la app'
             }
         }
 
-        stage('Install Dependencies'){
+        stage{'Install Dependencies'}{
             steps{
                 dir('app'){
-                sh '''
-                    python3 --version
-                    python3 -m venv venv
-                    . venv/bin/activate
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
-                '''
+                    sh '''
+                        python3 --version
+                        python3 -m venv venv
+                        . venv/bin/activate
+                        pip install --upgrade pip
+                        pip install -r requirements.txt
+                    '''
                 }
             }
         }
@@ -35,7 +35,7 @@ pipeline{
                 dir('app'){
                     sh '''
                         . venv/bin/activate
-                        pytest test_main.py
+                        pytest test main.py
                     '''
                 }
             }
@@ -45,14 +45,14 @@ pipeline{
             steps{
                 dir('app'){
                     sh '''
-                    . venv/bin/activate
-                    pylint main.py || true
-                '''
+                        . venv/bin/activate
+                        pylint main.py || true
+                    '''
                 }
             }
         }
 
-        stage('SonarQube Analysis'){
+        stage{'SonarQube Analysis'}{
             steps{
                 script{
                     def scannerHome = tool 'SonarScanner'
@@ -61,13 +61,14 @@ pipeline{
                     }
                 }
             }
+        }
 
         stage('OWASP Dependency Check'){
             steps{
                 dir('app'){
                     sh '''
-                        mkdir -p depedency-check-report
-                        echo "OWASP Depedency Check Placeholder" > depedency-check-report/report.txt
+                        mkdir -p dependency-check-report#
+                        echo "OWASP Dependency Check placeholder report" > dependency-check-report/report.txt
                     '''
                 }
             }
@@ -77,18 +78,16 @@ pipeline{
             steps{
                 dir('app'){
                     sh '''
-                        echo "Trivy placeholder scan result" > trivy-report.txt
-                      '''
+                        echo "Trivy placeholder scan report" > trivy-report.txt
+                    '''
                 }
             }
-        }
         }
     }
 
     post{
         always{
             archiveArtifacts artifacts: 'app/dependency-check-report/*, app/trivy-report.txt', fingerprint: true
-            echo 'Pipeline execution finished.'
         }
 
         success{
