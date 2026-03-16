@@ -1,24 +1,24 @@
 pipeline {
     agent any
 
-    stages{
-        stage{'Checkout code'}{
-            steps{
+    stages {
+        stage('Checkout Code') {
+            steps {
                 echo 'Repository loaded from GitHub'
             }
         }
 
-        stage{'List Files'}{
-            steps{
+        stage('List Files') {
+            steps {
                 sh 'pwd'
                 sh 'ls -la'
-                sh ' ls -la app'
+                sh 'ls -la app'
             }
         }
 
-        stage{'Install Dependencies'}{
-            steps{
-                dir('app'){
+        stage('Install Dependencies') {
+            steps {
+                dir('app') {
                     sh '''
                         python3 --version
                         python3 -m venv venv
@@ -30,20 +30,20 @@ pipeline {
             }
         }
 
-        stage('Run Tests'){
-            steps{
-                dir('app'){
+        stage('Run Tests') {
+            steps {
+                dir('app') {
                     sh '''
                         . venv/bin/activate
-                        pytest test main.py
+                        pytest test_main.py
                     '''
                 }
             }
         }
 
-        stage('Run Lint'){
-            steps{
-                dir('app'){
+        stage('Run Lint') {
+            steps {
+                dir('app') {
                     sh '''
                         . venv/bin/activate
                         pylint main.py || true
@@ -52,31 +52,31 @@ pipeline {
             }
         }
 
-        stage{'SonarQube Analysis'}{
-            steps{
-                script{
+        stage('SonarQube Analysis') {
+            steps {
+                script {
                     def scannerHome = tool 'SonarScanner'
-                    withSonarQubeEnv('SonarQube'){
+                    withSonarQubeEnv('SonarQube') {
                         sh "${scannerHome}/bin/sonar-scanner"
                     }
                 }
             }
         }
 
-        stage('OWASP Dependency Check'){
-            steps{
-                dir('app'){
+        stage('OWASP Dependency Check') {
+            steps {
+                dir('app') {
                     sh '''
-                        mkdir -p dependency-check-report#
+                        mkdir -p dependency-check-report
                         echo "OWASP Dependency Check placeholder report" > dependency-check-report/report.txt
                     '''
                 }
             }
         }
 
-        stage('Trivy Scan'){
-            steps{
-                dir('app'){
+        stage('Trivy Scan') {
+            steps {
+                dir('app') {
                     sh '''
                         echo "Trivy placeholder scan report" > trivy-report.txt
                     '''
@@ -85,17 +85,19 @@ pipeline {
         }
     }
 
-    post{
-        always{
+    post {
+        always {
             archiveArtifacts artifacts: 'app/dependency-check-report/*, app/trivy-report.txt', fingerprint: true
+            echo 'Pipeline execution finished.'
         }
 
-        success{
+        success {
             echo 'Pipeline completed successfully.'
         }
 
-        failure{
+        failure {
             echo 'Pipeline failed. Check the console output.'
         }
     }
+}
 }
