@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevSecOps Security Dashboard</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container py-4">
+        <h1 class="mb-4">DevSecOps Security Dashboard</h1>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Pipeline Status</h5>
+                        <p class="card-text fs-4 fw-bold">{{ summary.pipeline_status }}</p>
+                        <p class="text-muted mb-0">Last run: {{ summary.last_run }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Compliance Score</h5>
+                        <p class="card-text fs-4 fw-bold">{{ summary.compliance_score }}%</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Critical Vulnerabilities</h5>
+                        <p class="card-text fs-4 fw-bold">
+                            {{ summary.vulnerabilities.critical }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h6>Critical</h6>
+                        <p class="fs-3 fw-bold mb-0">{{ summary.vulnerabilities.critical }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h6>High</h6>
+                        <p class="fs-3 fw-bold mb-0">{{ summary.vulnerabilities.high }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h6>Medium</h6>
+                        <p class="fs-3 fw-bold mb-0">{{ summary.vulnerabilities.medium }}</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <h6>Low</h6>
+                        <p class="fs-3 fw-bold mb-0">{{ summary.vulnerabilities.low }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <h5 class="card-title">Failed Checks</h5>
+                {% if summary.failed_checks %}
+                    <ul class="mb-0">
+                        {% for check in summary.failed_checks %}
+                            <li>{{ check }}</li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="mb-0">No failed checks.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>
