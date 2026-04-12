@@ -1,0 +1,16 @@
+{
+  "pipeline_status": "Failed",
+  "last run": "2026-04-12 14:30",
+  "vulnerabilities": {
+    "critical": 1,
+    "high": 2,
+    "medium": 3,
+    "low": 4
+  },
+  "compliance score": 88,
+  "failed checks": [
+    "Critical vulnerability detected in container image",
+    "Dependency CVE found in requirements.txt",
+    "Docker configuration failed policy check"
+  ]
+}
