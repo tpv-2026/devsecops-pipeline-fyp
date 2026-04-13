@@ -70,10 +70,11 @@ pipeline {
 
                     dir('app') {
                         sh """
+                            mkdir -p ../reports
                             ${dcHome}/bin/dependency-check.sh \
                             --scan . \
-                            --format HTML \
-                            --out dependency-check-report \
+                            --format JSON \
+                            --out ../reports \
                             --disableAssembly
                         """
                     }
@@ -85,7 +86,8 @@ pipeline {
             steps {
                 dir('app') {
                     sh '''
-                        trivy fs --format table --output trivy-report.txt > trivy-report.txt .
+                        mkdir -p ../reports
+                        trivy fs --format json --output ../reports/trivy-report.json .
                     '''
                 }
             }
@@ -98,11 +100,19 @@ pipeline {
                 }
             }
         }
+
+        stage('Generate Dashboad Summary') {
+            steps {
+                sh '''
+                python scripts/generate_summary.py
+                '''
+            }
+        }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: 'app/dependency-check-report/*, app/trivy-report.txt', fingerprint: true
+            archiveArtifacts artifacts: 'reports/*, gui/data/summary.json', fingerprint: true
             echo 'Pipeline execution finished.'
         }
 
